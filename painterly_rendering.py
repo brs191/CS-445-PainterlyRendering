@@ -18,9 +18,9 @@ class Painter:
         self.sample_img = None
 
         # constant factors for various parameters in the paper.
-        self.gaussian_factor = 1 #.5
+        self.gaussian_factor = .5
         self.grid_factor = 1 #.5
-        self.threshold = 10
+        self.threshold = 5
         self.minStrokeLength = 2
         self.maxStrokeLength = 6
     
@@ -47,7 +47,9 @@ class Painter:
             but they both must be positive and odd. Or, they can be zero's 
             and then they are computed from sigma. 
             """
-            r_temp = self.gaussian_factor * r
+            r_temp = int(self.gaussian_factor * r)
+            if (r_temp %2 == 0):
+                r_temp = r_temp + 1
             referenceImage = cv2.GaussianBlur(sourceImage, (r_temp, r_temp), cv2.BORDER_REFLECT)
             plt.figure()
             plt.imshow(referenceImage)
@@ -107,9 +109,8 @@ class Painter:
                 # but x starts from 0. need to fix below??
                 # M = D[x-grid/2:x+grid/2, y-grid/2:y+grid/2]
                  M = D[x:x+grid, y:y+grid]
-                 print("M shape is ", M.shape) # 15x15
+#                 print("M shape is ", M.shape) # 15x15
                  areaError = np.sum(M)/(grid**2)
-                 print("areaError threshold execced ", areaError)
                  if (areaError > self.threshold):
                      print("areaError threshold execced ", areaError)
                      # find the largest error point
@@ -206,7 +207,6 @@ class Painter:
             
             #detect vanishing gradient
             
-            
          
 
         return K
@@ -263,7 +263,6 @@ def main():
     #    brush_sizes = [10]
         canvas = painter.paint(img_rgb, brush_sizes)
     #    painter.paintLayer(canvas, img_rgb, brush_sizes)
-        painter.makeSplineStroke()
         print("Program ended")
     
 if __name__ == "__main__":
