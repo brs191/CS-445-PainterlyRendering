@@ -114,15 +114,15 @@ class Painter:
                      print("areaError threshold execced ", areaError)
                      # find the largest error point
                      x1, y1 = np.where(M == np.amax(M))
-                     
-                     s = self.makeSplineStroke(canvas, r, x1[0], y1[0], referenceImage)
+                     s = self.make_stroke(canvas, r, x + x1[0], y + y1[0], referenceImage) # For Part 1 - Normal strokes
+                     #s = self.makeSplineStroke(canvas, r, x1[0], y1[0], referenceImage)
                      S.append(s)
         
         # paint all strokes in S on the canvas, in random order
         random_strokes = random.sample(S, len(S)) 
         print("Painting strokes")
         for stroke in random_strokes:
-            canvas = cv2.circle(canvas,(stroke["x"],stroke["y"]), stroke["r"], (stroke["c1"],stroke["c2"],stroke["c3"]), -1)
+            canvas = cv2.circle(canvas,(stroke["y"],stroke["x"]), stroke["r"], (stroke["c1"],stroke["c2"],stroke["c3"]), -1)
         canvas = canvas.astype('uint8')
         plt.figure()
         plt.imshow(canvas)
@@ -259,7 +259,7 @@ def main():
             plt.imshow(img_rgb)
             plt.title('sample image')
     
-        brush_sizes = [15]
+        brush_sizes = [5]
     #    brush_sizes = [10]
         canvas = painter.paint(img_rgb, brush_sizes)
     #    painter.paintLayer(canvas, img_rgb, brush_sizes)
