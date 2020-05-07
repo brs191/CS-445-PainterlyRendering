@@ -219,7 +219,6 @@ class Painter:
             gx = cv2.Sobel(refImage, cv2.CV_32F, 1, 0)
             gy = cv2.Sobel(refImage, cv2.CV_32F, 0, 1)
             
-<<<<<<< HEAD
             # compute a normal direction
             dx,dy = -gy, gx
             #print("Last Dx , dy", lastDx, lastDy)
@@ -241,9 +240,6 @@ class Painter:
     
             #add the point (x,y) to K
             spline_stroke_value["point2"] = (final_x,final_y)
-=======
-         
->>>>>>> 1588ba38c37d77879baf0fc2a5a7f1eae8997606
 
         return K
 
