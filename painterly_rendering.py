@@ -52,7 +52,7 @@ class Painter:
             plt.figure()
             plt.imshow(referenceImage)
             plt.title(str(r) + " gaussian filtered")
-            self.paintLayer(sourceImage, referenceImage, r)
+            self.paintLayer(canvas, referenceImage, r)
         
         return canvas
     
@@ -121,6 +121,7 @@ class Painter:
         # paint all strokes in S on the canvas, in random order
         random_strokes = random.sample(S, len(S)) 
         print("Painting strokes")
+        # Below code is for normal strokes algorithm
         for stroke in random_strokes:
             canvas = cv2.circle(canvas,(stroke["y"],stroke["x"]), stroke["r"], (stroke["c1"],stroke["c2"],stroke["c3"]), -1)
         canvas = canvas.astype('uint8')
@@ -183,16 +184,21 @@ class Painter:
 #            return K
 #        }
         """
-        The stroke isrepresented as a list of control points, a color, and 
+        The stroke is represented as a list of control points, a color, and 
         a brushradius. The control point (x0,y0) is added to the spline, 
         and thecolor of the reference image at (x0,y0) is used as the 
         # color of thespline.
         """
         strokeColor = refImage[x0, y0]
         print("strokeColor is ", strokeColor) # 137, 146, 167
-        
+       
         K = []
-        K.append((x0,y0))
+        spline_stroke_value = {
+            "point1": (x0,y0), # To be changed to a points array
+            "r": r,
+            "color":strokeColor
+        }
+        K.append(spline_stroke_value)
         print("K is ", K) # [(4,11)]
         print("K len is ", len(K)) # 1
         (x, y) = (x0, y0)
@@ -201,13 +207,38 @@ class Painter:
         for i in range(1, self.maxStrokeLength):
             a = abs(refImage[x,y] - canvas[x,y]) # this is a RGB value
             b = abs(refImage[x,y] - strokeColor) # this is a RGB value
-            if (i > self.minStrokeLength and a > b): # don't think this works??
+            if (i > self.minStrokeLength and a.all() > b.all()): # don't think this works??
                 return K
             
             #detect vanishing gradient
+            if (refImage[x,y].any() == 0):
+                return K
             
+            # get unit vector of gradient
+            gx = cv2.Sobel(refImage, cv2.CV_32F, 1, 0)
+            gy = cv2.Sobel(refImage, cv2.CV_32F, 0, 1)
             
-         
+            # compute a normal direction
+            dx,dy = -gy, gx
+            #print("Last Dx , dy", lastDx, lastDy)
+            
+            # if necessary, reverse direction
+            if ((lastDx * dx).any() + (lastDy * dy).any() < 0):
+                dx,dy = -dx, -dy
+                
+            # filter the stroke direction
+            fc = 0.6 # Constant value to be changed
+            dx = fc * dx + (1-fc) * lastDx
+            dy = fc * dy + (1-fc) * lastDy
+                
+            dx = dx / np.sqrt(dx**2+dy**2)
+            dy = dy / np.sqrt(dx**2+dy**2)
+
+            final_x,final_y = x + r*dx, y + r*dy
+            lastDx,lastDy = dx,dy 
+    
+            #add the point (x,y) to K
+            spline_stroke_value["point2"] = (final_x,final_y)
 
         return K
 
