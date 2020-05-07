@@ -9,6 +9,7 @@ import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 class Painter:
     def __init__(self):
@@ -118,12 +119,29 @@ class Painter:
                      S.append(s)
         
         # paint all strokes in S on the canvas, in random order
+        random_strokes = random.sample(S, len(S)) 
+        print("Painting strokes")
+        for stroke in random_strokes:
+            canvas = cv2.circle(canvas,(stroke["x"],stroke["y"]), stroke["r"], (stroke["c1"],stroke["c2"],stroke["c3"]), -1)
+        canvas = canvas.astype('uint8')
         plt.figure()
-        plt.imshow(D)
+        plt.imshow(canvas)
         plt.title(str(r) + " printLayer")
         
         return canvas
         
+    def make_stroke(self, canvas, r, x, y, reference_img):
+        color = reference_img[x, y]
+        stroke_value = {
+            "x": x,
+            "y": y,
+            "r": r,
+            "c1":int(color[0]),
+            "c2":int(color[1]),
+            "c3":int(color[2])
+        }
+        return stroke_value
+
     def makeSplineStroke(self, canvas, r, x0, y0, refImage):
         print("Implement makeSplineStroke function")
 #        function makeSplineStroke(x 0 ,y 0 ,R,refImage)
@@ -193,7 +211,7 @@ class Painter:
 
         return K
 
-test = 1
+test = 2
 def mytestcode():
     print("hello testcode ")
     arr = np.arange(9).reshape(3,3)
