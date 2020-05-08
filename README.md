@@ -17,8 +17,8 @@ matplotlib
 ```
 ### Project structure
 - painterly_rendering.py is the main file which contains the code.
-- images folder contains the images that are used to test the code.
-- output_images folder contains the images that are rendered using normal brush strokes algorithm and curved brush strokes algorithm.
+- images/input folder contains the images that are used to test the code.
+- images/output folder contains the images that are rendered using normal brush strokes algorithm and curved brush strokes algorithm.
 
 ### Running the file
 ```
