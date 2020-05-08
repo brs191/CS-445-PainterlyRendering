@@ -11,6 +11,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+NORMAL_STROKE = 1 
+SPLINE_STROKE = 2
+
 class Painter:
     def __init__(self):
         print("Initialize Painter class")
@@ -20,11 +23,11 @@ class Painter:
         # constant factors for various parameters in the paper.
         self.gaussian_factor = .5
         self.grid_factor = 1 #.5
-        self.threshold = 5
+        self.threshold = 10
         self.minStrokeLength = 2
         self.maxStrokeLength = 6
     
-    def paint(self, sourceImage, brush_sizes): #, srcImg, R):
+    def paint(self, sourceImage, brush_sizes, strokeType): #, srcImg, R):
 #        function paint(sourceImage,R1 ... Rn) {
 #            canvas := a new constant color image
 #            
@@ -54,12 +57,12 @@ class Painter:
             plt.figure()
             plt.imshow(referenceImage)
             plt.title(str(r) + " gaussian filtered")
-            self.paintLayer(canvas, referenceImage, r)
+            self.paintLayer(canvas, referenceImage, r, strokeType)
         
         return canvas
     
         
-    def paintLayer(self, canvas, referenceImage, r): #, canvas, refImg, R)
+    def paintLayer(self, canvas, referenceImage, r, strokeType): #, canvas, refImg, R)
         print("Implement paintLayer function")
 #        procedure paintLayer(canvas,referenceImage, R)
 #        {
@@ -115,8 +118,11 @@ class Painter:
                      print("areaError threshold execced ", areaError)
                      # find the largest error point
                      x1, y1 = np.where(M == np.amax(M))
-                     #s = self.make_stroke(canvas, r, x + x1[0], y + y1[0], referenceImage) # For Part 1 - Normal strokes
-                     s = self.makeSplineStroke(canvas, r, x + x1[0], y + y1[0], referenceImage)
+                     if strokeType == SPLINE_STROKE:
+                         s = self.makeSplineStroke(canvas, r, x + x1[0], y + y1[0], referenceImage)
+                     else:
+                         # For Part 1 - Normal strokes
+                         s = self.make_stroke(canvas, r, x + x1[0], y + y1[0], referenceImage)
                      S.append(s)
         
         # paint all strokes in S on the canvas, in random order
@@ -129,16 +135,21 @@ class Painter:
         '''
         # Below code is for spline storkes algorithm
         # To do - Code to be refactored
-        for stroke in random_strokes:
-            stroke1_points = stroke[0]["points"]
-            p1 = stroke1_points[0]
-            if (len(stroke1_points) > 1):
-                p2 = stroke1_points[1]
-            else:
-                p2 = p1
-            colour_array = stroke[0]["color"]
-            colour = (int(colour_array[0]),int(colour_array[1]),int(colour_array[2]))
-            canvas = cv2.line(canvas,p1,p2,colour,stroke[0]["r"])
+        if strokeType == SPLINE_STROKE:
+            for stroke in random_strokes:
+                stroke1_points = stroke[0]["points"]
+                p1 = stroke1_points[0]
+                if (len(stroke1_points) > 1):
+                    p2 = stroke1_points[1]
+                else:
+                    p2 = p1
+                colour_array = stroke[0]["color"]
+                colour = (int(colour_array[0]),int(colour_array[1]),int(colour_array[2]))
+                canvas = cv2.line(canvas,p1,p2,colour,stroke[0]["r"])
+        else:
+            for stroke in random_strokes:
+                canvas = cv2.circle(canvas,(stroke["y"],stroke["x"]), stroke["r"], (stroke["c1"],stroke["c2"],stroke["c3"]), -1)
+            
         canvas = canvas.astype('uint8')
         plt.figure()
         plt.imshow(canvas)
@@ -265,7 +276,7 @@ class Painter:
         return K
 
 
-test = 2
+test = 0
 def mytestcode():
     print("hello testcode ")
     arr = np.arange(9).reshape(3,3)
@@ -296,7 +307,7 @@ def mytestcode():
     print("val22 is ", np.linalg.norm(strokeColor2))
     print("storke difference is ", strokeColor1 - strokeColor2)
     
-    
+    print("NORMAL_STROKE ", NORMAL_STROKE)
     
 def main():
 
@@ -315,7 +326,8 @@ def main():
     
         brush_sizes = [5]
     #    brush_sizes = [10]
-        canvas = painter.paint(img_rgb, brush_sizes)
+        canvas = painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
+        canvas = painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
     #    painter.paintLayer(canvas, img_rgb, brush_sizes)
         print("Program ended")
     
