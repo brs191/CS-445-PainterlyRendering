@@ -195,7 +195,7 @@ def main():
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
         painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
         
 
     brush_sizes = [3, 5]
@@ -207,7 +207,7 @@ def main():
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
         painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
 
     brush_sizes = [5, 7]
     src_file = 'source3.jpg'
@@ -218,7 +218,7 @@ def main():
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
         painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
             
 if __name__ == "__main__":
     main()
