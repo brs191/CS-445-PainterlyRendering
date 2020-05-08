@@ -115,16 +115,30 @@ class Painter:
                      print("areaError threshold execced ", areaError)
                      # find the largest error point
                      x1, y1 = np.where(M == np.amax(M))
-                     s = self.make_stroke(canvas, r, x + x1[0], y + y1[0], referenceImage) # For Part 1 - Normal strokes
-                     #s = self.makeSplineStroke(canvas, r, x1[0], y1[0], referenceImage)
+                     #s = self.make_stroke(canvas, r, x + x1[0], y + y1[0], referenceImage) # For Part 1 - Normal strokes
+                     s = self.makeSplineStroke(canvas, r, x + x1[0], y + y1[0], referenceImage)
                      S.append(s)
         
         # paint all strokes in S on the canvas, in random order
         random_strokes = random.sample(S, len(S)) 
         print("Painting strokes")
         # Below code is for normal strokes algorithm
+        '''
         for stroke in random_strokes:
             canvas = cv2.circle(canvas,(stroke["y"],stroke["x"]), stroke["r"], (stroke["c1"],stroke["c2"],stroke["c3"]), -1)
+        '''
+        # Below code is for spline storkes algorithm
+        # To do - Code to be refactored
+        for stroke in random_strokes:
+            stroke1_points = stroke[0]["points"]
+            p1 = stroke1_points[0]
+            if (len(stroke1_points) > 1):
+                p2 = stroke1_points[1]
+            else:
+                p2 = p1
+            colour_array = stroke[0]["color"]
+            colour = (int(colour_array[0]),int(colour_array[1]),int(colour_array[2]))
+            canvas = cv2.line(canvas,p1,p2,colour,stroke[0]["r"])
         canvas = canvas.astype('uint8')
         plt.figure()
         plt.imshow(canvas)
@@ -194,14 +208,16 @@ class Painter:
         print("strokeColor is ", strokeColor) # 137, 146, 167
        
         K = []
+        control_points = []
+        control_points.append((y0,x0))
         spline_stroke_value = {
-            "point1": (x0,y0), # To be changed to a points array
+            "points": control_points,
             "r": r,
             "color":strokeColor
         }
         K.append(spline_stroke_value)
-        print("K is ", K) # [(4,11)]
-        print("K len is ", len(K)) # 1
+        #print("K is ", K) # [(4,11)]
+        #print("K len is ", len(K)) # 1
         (x, y) = (x0, y0)
         (lastDx, lastDy) = (0, 0)
         
@@ -215,14 +231,18 @@ class Painter:
             if (refImage[x,y].any() == 0):
                 return K
             
+            grayImage = cv2.cvtColor(refImage, cv2.COLOR_BGR2GRAY)
+        
             # get unit vector of gradient
-            gx = cv2.Sobel(refImage, cv2.CV_32F, 1, 0)
-            gy = cv2.Sobel(refImage, cv2.CV_32F, 0, 1)
+            grad_x = cv2.Sobel(grayImage, cv2.CV_32F, 1, 0)
+            grad_y = cv2.Sobel(grayImage, cv2.CV_32F, 0, 1)
+            
+            gx = grad_x[x,y]
+            gy = grad_y[x,y]
             
             # compute a normal direction
             dx,dy = -gy, gx
-            #print("Last Dx , dy", lastDx, lastDy)
-            
+
             # if necessary, reverse direction
             if ((lastDx * dx).any() + (lastDy * dy).any() < 0):
                 dx,dy = -dx, -dy
@@ -237,11 +257,13 @@ class Painter:
 
             final_x,final_y = x + r*dx, y + r*dy
             lastDx,lastDy = dx,dy 
-    
-            #add the point (x,y) to K
-            spline_stroke_value["point2"] = (final_x,final_y)
-
+            if(not np.isnan(final_x) and not np.isnan(final_y)):
+                 # To do - Change this
+                 # Explicitly casting it as int as cv2.line accepts integers
+                 # Also points are being duplicated - to be fixed
+                spline_stroke_value["points"].append((int(final_y),int(final_x)))
         return K
+
 
 test = 2
 def mytestcode():
