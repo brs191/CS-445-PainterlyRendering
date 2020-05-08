@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+DEBUG = 0
 NORMAL_STROKE = 1 
 SPLINE_STROKE = 2
 
@@ -100,10 +101,11 @@ class Painter:
             ns_img = cv2.cvtColor(canvas.astype(np.float32), cv2.COLOR_BGR2RGB)
             cv2.imwrite(self.output_dir + "normalStroke_brush_" + str(r) + "_" + self.src_file, ns_img)
             
-        canvas = canvas.astype('uint8')
-        plt.figure()
-        plt.imshow(canvas)
-        plt.title(str(r) + " printLayer")
+        if DEBUG == 1:
+            canvas = canvas.astype('uint8')
+            plt.figure()
+            plt.imshow(canvas)
+            plt.title(str(r) + " printLayer")
         
     def make_stroke(self, canvas, r, x, y, reference_img):
         color = reference_img[x, y]
@@ -187,39 +189,37 @@ def main():
     src_file = 'source1.jpg'
     
     painter.src_file = src_file
-    print(".. ", painter.input_dir + src_file)
     if os.path.exists(painter.input_dir + src_file):
         sample_img = cv2.imread(painter.input_dir + src_file)
         img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
         painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
         
 
     brush_sizes = [3, 5]
-    src_file = 'applesNoranges.jpg'
+    src_file = 'source2.jpg'
     painter.src_file = src_file
-    print(".. ", painter.input_dir + src_file)
     if os.path.exists(painter.input_dir + src_file):
         sample_img = cv2.imread(painter.input_dir + src_file)
         img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
         painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
 
     brush_sizes = [5, 7]
-    src_file = 'scenary.jpg'
+    src_file = 'source3.jpg'
     painter.src_file = src_file
-    print(".. ", painter.input_dir + src_file)
     if os.path.exists(painter.input_dir + src_file):
         sample_img = cv2.imread(painter.input_dir + src_file)
         img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
         painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
             
 if __name__ == "__main__":
     main()
+    print("----- Done -----")
