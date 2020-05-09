@@ -196,26 +196,26 @@ def main():
     brush_sizes = [5, 13]
     src_file = 'source1.jpg'
     
-#    painter.src_file = src_file
-#    if os.path.exists(painter.input_dir + src_file):
-#        sample_img = cv2.imread(painter.input_dir + src_file)
-#        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
-#        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
-#
-##        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-##        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+    painter.src_file = src_file
+    if os.path.exists(painter.input_dir + src_file):
+        sample_img = cv2.imread(painter.input_dir + src_file)
+        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
+        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
+
+        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
+        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
         
 
-#    brush_sizes = [3, 5]
-#    src_file = 'source2.jpg'
-#    painter.src_file = src_file
-#    if os.path.exists(painter.input_dir + src_file):
-#        sample_img = cv2.imread(painter.input_dir + src_file)
-#        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
-#        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
-#
-##        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+    brush_sizes = [3, 5]
+    src_file = 'source2.jpg'
+    painter.src_file = src_file
+    if os.path.exists(painter.input_dir + src_file):
+        sample_img = cv2.imread(painter.input_dir + src_file)
+        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
+        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
+
+        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
+        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
 
     brush_sizes = [3, 5, 10, 15]
     src_file = 'source3.jpg'
@@ -225,7 +225,7 @@ def main():
         img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
-#        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
+        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
         painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
             
 if __name__ == "__main__":
