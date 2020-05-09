@@ -106,7 +106,11 @@ class Painter:
             plt.figure()
             plt.imshow(canvas)
             plt.title(str(r) + " printLayer")
-        
+
+    """        
+    From the selected region, the color at that particular region is taken 
+    and used to paint circles with brush size as radius on the canvas.
+    """
     def make_stroke(self, canvas, r, x, y, reference_img):
         color = reference_img[x, y]
         stroke_value = {
@@ -119,6 +123,10 @@ class Painter:
         }
         return stroke_value
 
+    """
+    Stroke direction and points are computed using gradient values. 
+    These strokes are used to draw lines with brush size as thickness on the canvas.
+    """
     def makeSplineStroke(self, canvas, r, x0, y0, refImage):
         """
         The stroke is represented as a list of control points, a color, and 
@@ -188,28 +196,28 @@ def main():
     brush_sizes = [5, 13]
     src_file = 'source1.jpg'
     
-    painter.src_file = src_file
-    if os.path.exists(painter.input_dir + src_file):
-        sample_img = cv2.imread(painter.input_dir + src_file)
-        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
-        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
-
-        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
+#    painter.src_file = src_file
+#    if os.path.exists(painter.input_dir + src_file):
+#        sample_img = cv2.imread(painter.input_dir + src_file)
+#        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
+#        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
+#
+##        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
+##        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
         
 
-    brush_sizes = [3, 5]
-    src_file = 'source2.jpg'
-    painter.src_file = src_file
-    if os.path.exists(painter.input_dir + src_file):
-        sample_img = cv2.imread(painter.input_dir + src_file)
-        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
-        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
+#    brush_sizes = [3, 5]
+#    src_file = 'source2.jpg'
+#    painter.src_file = src_file
+#    if os.path.exists(painter.input_dir + src_file):
+#        sample_img = cv2.imread(painter.input_dir + src_file)
+#        img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
+#        cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
+#
+##        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
+#        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
 
-        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
-        painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
-
-    brush_sizes = [5, 7]
+    brush_sizes = [3, 5, 10, 15]
     src_file = 'source3.jpg'
     painter.src_file = src_file
     if os.path.exists(painter.input_dir + src_file):
@@ -217,7 +225,7 @@ def main():
         img_rgb = cv2.cvtColor(sample_img, cv2.COLOR_BGR2RGB)
         cv2.imwrite(painter.output_dir + "original_" + src_file, sample_img)
 
-        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
+#        painter.paint(img_rgb, brush_sizes, NORMAL_STROKE)
         painter.paint(img_rgb, brush_sizes, SPLINE_STROKE)
             
 if __name__ == "__main__":
